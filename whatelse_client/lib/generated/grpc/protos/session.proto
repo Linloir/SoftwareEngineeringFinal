@@ -1,0 +1,197 @@
+syntax = "proto3";
+
+package session;
+
+message CreateSessionRequest {
+    optional int64 parentId = 1;
+    int64 taskId = 2;
+    int64 start = 3;
+    int64 end = 4;
+    int32 cycle = 5;
+    int32 dupCount = 6;
+    int64 updateAt = 7;
+    optional int64 deleteAt = 8;
+}
+message CreateSessionResponse {
+    int64 sessionId = 1;
+}
+
+message ModifySessionRequest {
+    int64 sessionId = 1;
+    optional int64 parentId = 2;
+    int64 start = 3;
+    int64 end = 4;
+    int32 cycle = 5;
+    int32 dupCount = 6;
+    int64 updateAt = 7;
+    optional int64 deleteAt = 8;
+}
+message ModifySessionResponse { }
+
+message GetSessionRequest {
+    int64 sessionId = 1;
+}
+message GetSessionResponse {
+    int64 sessionId = 1;
+    optional int64 parentId = 2;
+    int64 taskId = 3;
+    int64 start = 4;
+    int64 end = 5;
+    int32 cycle = 6;
+    int32 dupCount = 7;
+    int64 updateAt = 8;
+    optional int64 deleteAt = 9;
+}
+
+message SessionInfo {
+    int64 sessionId = 1;
+    optional int64 parentId = 2;
+    int64 taskId = 3;
+    int64 start = 4;
+    int64 end = 5;
+    int32 cycle = 6;
+    int32 dupCount = 7;
+    int64 updateAt = 8;
+    optional int64 deleteAt = 9;
+}
+message GetSessionListRequest {
+    int64 taskId = 1;
+    optional int64 lastFetchAt = 2;
+}
+message GetSessionListResponse {
+    repeated SessionInfo sessionList = 1;
+}
+
+message RemoveSessionRequest {
+    int64 sessionId = 1;
+    int64 deleteAt = 2;
+}
+message RemoveSessionResponse { }
+
+message AttachmentMetaData {
+    optional int64 attachmentId = 1;
+    int64 recordId = 2;
+    string hash = 3;
+    string name = 4;
+    int64 updateAt = 5;
+    optional int64 deleteAt = 6;
+}
+message UploadAttachmentRequest {
+    oneof data {
+        AttachmentMetaData metaData = 1;
+        bytes chunk = 2;
+    }
+}
+message UploadAttachmentResponse {
+    int64 attachmentId = 1;
+}
+
+message GetAttachmentRequest {
+    int64 attachmentId = 1;
+}
+message GetAttachmentResponse {
+    oneof data {
+        AttachmentMetaData metaData = 1;
+        bytes chunk = 2;
+    }
+}
+
+message RemoveAttachmentRequest {
+    int64 attachmentId = 1;
+    int64 deleteAt = 2;
+}
+message RemoveAttachmentResponse { }
+
+message CreateRecordRequest {
+    int64 sessionId = 1;
+    int64 profileId = 2;
+    int64 time = 3;
+    int32 dupIndex = 4;
+    int64 taskDue = 5;
+    int64 updateAt = 6;
+    optional int64 deleteAt = 7;
+}
+message CreateRecordResponse {
+    int64 recordId = 1;
+}
+
+message GetRecordRequest {
+    int64 recordId = 1;
+}
+message GetRecordResponse {
+    int64 recordId = 1;
+    int64 sessionId = 2;
+    int64 profileId = 3;
+    int64 time = 4;
+    int32 dupIndex = 5;
+    int64 taskDue = 6;
+    int64 updateAt = 7;
+    optional int64 deleteAt = 8;
+}
+
+message ModifyRecordRequest {
+    int64 recordId = 1;
+    int64 time = 2;
+    int32 dupIndex = 3;
+    int64 taskDue = 4;
+    int64 updateAt = 5;
+    optional int64 deleteAt = 6;
+}
+message ModifyRecordResponse { }
+
+message RecordInfo {
+    int64 recordId = 1;
+    int64 sessionId = 2;
+    int64 profileId = 3;
+    int64 time = 4;
+    int32 dupIndex = 5;
+    int64 taskDue = 6;
+    int64 updateAt = 7;
+    optional int64 deleteAt = 8;
+}
+message GetRecordListRequest {
+    int64 sessionId = 1;
+    int64 profileId = 2;
+    optional int64 lastFetchAt = 3;
+}
+message GetRecordListResponse {
+    repeated RecordInfo recordList = 1;
+}
+
+message TaskRecordInfo {
+    int64 sessionId = 1;
+    repeated RecordInfo recordList = 2;
+}
+message GetTaskRecordListRequest {
+    int64 taskId = 1;
+    int64 profileId = 2;
+    optional int64 lastFetchAt = 3;
+}
+message GetTaskRecordListResponse {
+    repeated TaskRecordInfo sessionList = 1;
+}
+
+message RemoveRecordRequest {
+    int64 recordId = 1;
+    int64 deleteAt = 2;
+}
+message RemoveRecordResponse { }
+
+service Session {
+    rpc Create(CreateSessionRequest) returns (CreateSessionResponse);
+    rpc Modify(ModifySessionRequest) returns (ModifySessionResponse);
+    rpc Get(GetSessionRequest) returns (GetSessionResponse);
+    rpc GetList(GetSessionListRequest) returns (GetSessionListResponse);
+    rpc Remove(RemoveSessionRequest) returns (RemoveSessionResponse);
+
+    rpc UploadAttachment(stream UploadAttachmentRequest) returns (UploadAttachmentResponse);
+    rpc GetAttachment(GetAttachmentRequest) returns (stream GetAttachmentResponse);
+    rpc RemoveAttachment(RemoveAttachmentRequest) returns (RemoveAttachmentResponse);
+    
+    rpc CreateRecord(CreateRecordRequest) returns (CreateRecordResponse);
+    rpc GetRecord(GetRecordRequest) returns (GetRecordResponse);
+    rpc ModifyRecord(ModifyRecordRequest) returns (ModifyRecordResponse);
+    rpc GetRecordList(GetRecordListRequest) returns (GetRecordListResponse);
+    rpc GetTaskRecordList(GetTaskRecordListRequest) returns (GetTaskRecordListResponse);
+    rpc RemoveRecord(RemoveRecordRequest) returns (RemoveRecordResponse);
+}

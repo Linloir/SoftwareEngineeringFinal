@@ -1,0 +1,365 @@
+generator client {
+  provider = "dart run orm"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int             @id @default(autoincrement())
+  name      String
+  email     String?         @unique
+  phone     String?         @unique
+  password  String
+  avatarRef String?
+  unionId   String?         @unique
+  tencentId String?         @unique
+  appleId   String?         @unique
+
+  profiles  Profile[]
+}
+
+model Profile {
+  // information
+  name                  String
+  color                 String
+  icon                  String
+  
+  // user info
+  userId                Int
+  user                  User    @relation(references: [id], fields: [userId], onDelete: Cascade)
+
+  // related objects
+  categories            Category[]
+  tags                  Tag[]
+  tasks                 Task[]
+  channels              Channel[]
+  taskAssignments       TaskAssignment[]
+  channelSubscriptions  ChannelSubscription[]
+  schedules             Schedule[]
+  records               Record[]
+
+  // sync fields
+  updateAt              BigInt
+  syncAt                BigInt
+  deleteAt              BigInt  @default(-1)
+
+  @@id([userId, name])
+  @@index([syncAt])
+}
+
+model Task {
+  // task information
+  uuid        String      @id
+  title       String
+  desc        String
+  content     String      // markdown styled task content
+  location    String?     // 'lon-lat' location
+
+  // task requirements
+  requireLocation   Boolean
+  requireTime       Boolean
+  requireAttachment Boolean
+
+  // owner
+  userId      Int
+  profile     String
+  owner       Profile     @relation(references: [userId, name], fields: [userId , profile], onDelete: Cascade)
+
+  // parent
+  parentUuid  String?
+  parent      Task?       @relation("TaskParent", references: [uuid], fields: [parentUuid], onDelete: Cascade)
+  children    Task[]      @relation("TaskParent")
+
+  // channel
+  channelUuid String?
+  channel     Channel?    @relation(references: [uuid], fields: [channelUuid], onDelete: Cascade)
+
+  // related objects
+  assets      TaskAsset[]
+  assignments TaskAssignment[]
+  sessions    Session[]
+  records     Record[]
+
+  // sync fields
+  updateAt    BigInt
+  syncAt      BigInt
+  deleteAt    BigInt      @default(-1)
+
+  @@index([syncAt])
+}
+
+model TaskAsset {
+  // information
+  name  String    // the name of the asset file
+  hash  String    // the hash of the asset file
+  assetRef  String    // the reference of the asset file
+
+  // related task
+  taskUuid  String    // the uuid of the task that the asset belongs to
+  task      Task      @relation(references: [uuid], fields: [taskUuid], onDelete: Cascade)
+
+  // sync fields
+  updateAt  BigInt
+  syncAt    BigInt
+  deleteAt  BigInt    @default(-1)
+
+  @@id([taskUuid, hash])
+  @@index([syncAt])
+}
+
+model Channel {
+  // channel information
+  uuid          String                  @id
+  name          String                  // the name of the channel
+  desc          String                  // the description of the channel
+  color         String                  // the color of the channel
+  imgRef        String?                 // the background image of the channel
+
+  // owner
+  userId        Int                     // the user id of the owner profile
+  profileName   String                  // the name of the owner profile
+  owner         Profile                 @relation(references: [userId, name], fields: [userId, profileName], onDelete: Cascade)
+
+  // related objects
+  subscriptions ChannelSubscription[]
+  tasks         Task[]                  // tasks that had been published to this channel
+
+  // sync fields
+  updateAt      BigInt
+  syncAt        BigInt
+  deleteAt      BigInt                  @default(-1)
+
+  @@index([syncAt])
+}
+
+model Session {
+  // information
+  uuid              String            @id
+  start             BigInt            // start timestamp (unix milliseconds), for non-repeat session, it's same as end
+  end               BigInt            // end timestamp (unix milliseconds)
+  cycle             BigInt            // the timespan of one cycle (unix milliseconds)
+
+  // parent task
+  taskUuid          String
+  task              Task              @relation(references: [uuid], fields: [taskUuid], onDelete: Cascade)
+
+  // related objects
+  schedules         Schedule[]        // schedules for this session
+  records           Record[]
+
+  // sync fields
+  updateAt          BigInt
+  syncAt            BigInt
+  deleteAt          BigInt
+
+  @@index([syncAt])
+}
+
+model Record {
+  // information
+  time        BigInt    // the finish time of the related session task (unix milliseconds)
+  recordIndex Int       // the index of the record in the session
+
+  // parent session
+  sessionUuid String
+  session     Session   @relation(references: [uuid], fields: [sessionUuid], onDelete: Cascade)
+
+  // parent task
+  taskUuid    String
+  task        Task      @relation(references: [uuid], fields: [taskUuid], onDelete: Cascade)
+
+  // parent profile
+  userId      Int
+  profileName String
+  profile     Profile   @relation(references: [userId, name], fields: [userId, profileName], onDelete: Cascade)
+
+  // related objects
+  attachment  RecordAttachment?
+
+  // sync fields
+  updateAt    BigInt
+  syncAt      BigInt
+  deleteAt    BigInt
+
+  @@id([sessionUuid, taskUuid, userId, profileName, recordIndex])
+  @@index([syncAt])
+}
+
+model RecordAttachment {
+  // information
+  hash        String
+  name        String
+  assetRef    String
+
+  // related record
+  sessionUuid String
+  taskUuid    String
+  userId      Int
+  profileName String
+  recordIndex Int
+  record      Record    @relation(references: [sessionUuid, taskUuid, userId, profileName, recordIndex], fields: [sessionUuid, taskUuid, userId, profileName, recordIndex], onDelete: Cascade)
+
+  // sync fields
+  updateAt    BigInt
+  syncAt      BigInt
+  deleteAt    BigInt
+
+  @@id([sessionUuid, taskUuid, userId, profileName, recordIndex])
+  @@index([syncAt])
+}
+
+model Category {
+  // information
+  name        String            // the name of the category
+  color       String            // the color of the category
+  icon        String            // the icon of the category
+
+  // owner
+  userId      Int
+  profileName String
+  profile     Profile           @relation(references: [userId, name], fields: [userId, profileName], onDelete: Cascade)
+
+  // related objects
+  assignments TaskAssignment[]
+
+  // sync fields
+  updateAt    BigInt
+  syncAt      BigInt
+  deleteAt    BigInt
+
+  @@id([userId, profileName, name])
+  @@index([syncAt])
+}
+
+model Tag {
+  // information
+  name        String    // the name of the tag
+  color       String    // the color of the tag
+  icon        String    // the icon of the tag
+
+  // owner
+  userId      Int
+  profileName String
+  profile     Profile   @relation(references: [userId, name], fields: [userId, profileName], onDelete: Cascade)
+
+  // related objects
+  assignments TaskAssignmentTags[]
+
+  // sync fields
+  updateAt    BigInt
+  syncAt      BigInt
+  deleteAt    BigInt
+
+  @@id([userId, profileName, name])
+  @@index([syncAt])
+}
+
+enum TaskAssignmentStatus {
+  ACCEPTED
+  REJECTED
+}
+
+enum TaskPriority {
+  NONE
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+model TaskAssignment {
+  // information
+  status            TaskAssignmentStatus
+  priority          TaskPriority
+  starred           Boolean
+
+  // parent task
+  taskUuid          String
+  task              Task                  @relation(references: [uuid], fields: [taskUuid], onDelete: Cascade)
+  
+  // profile
+  userId            Int
+  profileName       String
+  profile           Profile               @relation(references: [userId, name], fields: [userId, profileName], onDelete: Cascade)
+
+  // category
+  categoryName      String?
+  category          Category?             @relation(references: [userId, profileName, name], fields: [userId, profileName, categoryName], onDelete: Cascade)
+
+  // tag
+  tags              TaskAssignmentTags[]
+
+  // sync fields
+  updateAt          BigInt
+  syncAt            BigInt
+  deleteAt          BigInt
+
+  @@id([taskUuid, userId, profileName])
+  @@index([syncAt])
+}
+
+model TaskAssignmentTags {
+  // parent assignment
+  taskUuid          String
+  userId            Int
+  profileName       String
+  assignment        TaskAssignment         @relation(references: [taskUuid, userId, profileName], fields: [taskUuid, userId, profileName], onDelete: Cascade)
+
+  // parent tag
+  tagName           String
+  tag               Tag                    @relation(references: [userId, profileName, name], fields: [userId, profileName, tagName], onDelete: Cascade)
+
+  @@id([taskUuid, userId, profileName, tagName])
+}
+
+model ChannelSubscription {
+  // subscription settings
+  shareRecord   Boolean
+
+  // parent channel
+  channelUuid   String
+  channel       Channel   @relation(references: [uuid], fields: [channelUuid], onDelete: Cascade)
+
+  // profile
+  userId        Int
+  profileName   String
+  profile       Profile   @relation(references: [userId, name], fields: [userId, profileName], onDelete: Cascade)
+
+  // sync fields
+  updateAt      BigInt
+  syncAt        BigInt
+  deleteAt      BigInt
+
+  @@id([channelUuid, userId, profileName])
+  @@index([syncAt])
+}
+
+model Schedule {
+  // information
+  relStart      BigInt      // relative start time in milliseconds based on the session task due
+  relEnd        BigInt      // relative end time in milliseconds based on the session task due
+  
+  // parent session
+  sessionUuid   String
+  session       Session     @relation(references: [uuid], fields: [sessionUuid], onDelete: Cascade)
+
+  // profile
+  userId        Int
+  profileName   String
+  profile       Profile     @relation(references: [userId, name], fields: [userId, profileName], onDelete: Cascade)
+
+  // sync fields
+  updateAt      BigInt
+  syncAt        BigInt
+  deleteAt      BigInt
+
+  @@id([sessionUuid, userId, profileName])
+}
+
+model FileRef {
+  hash          String    @id
+  count         Int?      @default(1)
+}

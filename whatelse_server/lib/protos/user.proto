@@ -1,0 +1,108 @@
+// User registration and modification service
+
+syntax = "proto3";
+
+package user;
+
+message UserInfo {
+    int64 id = 1;
+    string name = 2;
+}
+
+message UserRegisterRequest {
+    string username = 1;
+    string identifier = 2;  // identifier can be a phone number or an email address
+    string password = 3;
+    string unionId = 4;
+    string tencentId = 5;
+    string appleId = 6;
+}
+message UserRegisterResponse {}
+
+message UserCheckClaimRequest {
+    string userClaim = 1;
+}
+
+message UserCheckClaimResponse {
+    bool exists = 1;
+}
+
+message UserModNameRequest {
+    string username = 1;
+}
+message UserModNameResponse {}
+
+message UserModEmailRequest {
+    optional string email = 1;
+}
+message UserModEmailResponse {}
+
+message UserModPhoneRequest {
+    optional string phone = 1;
+}
+message UserModPhoneResponse {}
+
+message UserModPasswordRequest {
+    string oldPassword = 1;
+    string newPassword = 2;
+}
+message UserModPasswordResponse {}
+
+message UserModAvatarRequest {
+    bytes avatar = 1;
+}
+message UserModAvatarResponse {}
+
+message UserModUnionIdRequest {
+    optional string unionId = 1;
+}
+message UserModUnionIdResponse {
+    string unionIdName = 1;
+}
+
+message UserModTencentIdRequest {
+    optional string tencentId = 1;
+}
+message UserModTencentIdResponse {
+    string tencentIdName = 1;
+}
+
+message UserModAppleIdRequest {
+    optional string appleId = 1;
+}
+message UserModAppleIdResponse {
+    string appleIdName = 1;
+}
+
+message UserInfoRequest {}
+message UserInfoResponse {
+    int64 id = 1;
+    string name = 2;
+    string email = 3;
+    string phone = 4;
+    bytes avatar = 5;
+    string unionIdName = 6;
+    string tencentIdName = 7;
+    string appleIdName = 8;
+}
+
+message UserCancelRequest {
+    string userClaim = 1;
+    string password = 2;
+}
+message UserCancelResponse {}
+
+service User {
+    rpc Register (UserRegisterRequest) returns (UserRegisterResponse);
+    rpc CheckClaim (UserCheckClaimRequest) returns (UserCheckClaimResponse);
+    rpc ModName (UserModNameRequest) returns (UserModNameResponse);
+    rpc ModEmail (UserModEmailRequest) returns (UserModEmailResponse);
+    rpc ModPhone (UserModPhoneRequest) returns (UserModPhoneResponse);
+    rpc ModPassword (UserModPasswordRequest) returns (UserModPasswordResponse);
+    rpc ModAvatar (UserModAvatarRequest) returns (UserModAvatarResponse);
+    rpc ModUnionId (UserModUnionIdRequest) returns (UserModUnionIdResponse);
+    rpc ModTencentId (UserModTencentIdRequest) returns (UserModTencentIdResponse);
+    rpc ModAppleId (UserModAppleIdRequest) returns (UserModAppleIdResponse);
+    rpc Info (UserInfoRequest) returns (UserInfoResponse);
+    rpc Cancel (UserCancelRequest) returns (UserCancelResponse);
+}

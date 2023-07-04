@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package category;
+
+import "profile.proto";
+import "common.proto";
+
+message CategoryInfo {
+    string name = 1;
+    string color = 2;
+    string icon = 3;
+    profile.ProfileInfo owner = 4;
+    int64 updateAt = 5;
+    optional int64 deleteAt = 6;
+}
+
+message CategoryList {
+    repeated CategoryInfo categories = 1;
+}
+
+service CategoryService {
+    rpc PutCategory (CategoryInfo) returns (common.Empty);
+    rpc FetchCategory (common.FetchRequest) returns (CategoryList);
+}

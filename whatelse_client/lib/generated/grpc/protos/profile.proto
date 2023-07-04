@@ -1,0 +1,69 @@
+syntax = "proto3";
+
+package profile;
+
+message CreateProfileRequest {
+    string name = 1;
+    optional string desc = 2;
+    int32 color = 3;
+    string icon = 4;
+    int64 updateAt = 5;
+    optional int64 deleteAt = 6;
+}
+message CreateProfileResponse {
+    int64 profileId = 1;
+}
+
+message GetProfileRequest {
+    int64 profileId = 1;
+}
+message GetProfileResponse {
+    int64 profileId = 1;
+    string name = 2;
+    optional string desc = 3;
+    int32 color = 4;
+    string icon = 5;
+    int64 updateAt = 6;
+    optional int64 deleteAt = 7;
+}
+
+message ModifyProfileRequest {
+    int64 profileId = 1;
+    string name = 2;
+    optional string desc = 3;
+    int32 color = 4;
+    string icon = 5;
+    int64 updateAt = 6;
+    optional int64 deleteAt = 7;
+}
+message ModifyProfileResponse { }
+
+message RemoveProfileRequest {
+    int64 profileId = 1;
+    int64 deleteAt = 2;
+}
+message RemoveProfileResponse { }
+
+message ProfileInfo {
+    int64 profileId = 1;
+    string name = 2;
+    optional string desc = 3;
+    int32 color = 4;
+    string icon = 5;
+    int64 updateAt = 6;
+    optional int64 deleteAt = 7;
+};
+message GetProfileListRequest {
+    optional int64 lastFetchAt = 1;
+}
+message GetProfileListResponse {
+    repeated ProfileInfo profiles = 1;
+}
+
+service Profile {
+    rpc Create (CreateProfileRequest) returns (CreateProfileResponse);
+    rpc Modify (ModifyProfileRequest) returns (ModifyProfileResponse);
+    rpc Get (GetProfileRequest) returns (GetProfileResponse);
+    rpc GetList (GetProfileListRequest) returns (GetProfileListResponse);
+    rpc Remove (RemoveProfileRequest) returns (RemoveProfileResponse);
+}

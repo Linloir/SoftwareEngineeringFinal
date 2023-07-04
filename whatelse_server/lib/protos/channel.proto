@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package channel;
+
+import "profile.proto";
+import "common.proto";
+
+message ChannelInfo {
+    string uuid = 1;
+    string name = 2;
+    string desc = 3;
+    string color = 4;
+    optional bytes image = 5;
+    profile.ProfileInfo owner = 6;
+    int64 updateAt = 7;
+    optional int64 deleteAt = 8;
+}
+
+message ChannelList {
+    repeated ChannelInfo channels = 1;
+}
+
+service ChannelService {
+    rpc PutChannel (ChannelInfo) returns (common.Empty);
+    rpc FetchChannel (common.FetchRequest) returns (ChannelList);
+}

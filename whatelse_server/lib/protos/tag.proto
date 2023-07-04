@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package tag;
+
+import "profile.proto";
+import "common.proto";
+
+message TagInfo {
+    string name = 1;
+    string color = 2;
+    string icon = 3;
+    profile.ProfileInfo owner = 4;
+    int64 updateAt = 5;
+    optional int64 deleteAt = 6;
+}
+
+message TagList {
+    repeated TagInfo tags = 1;
+}
+
+service TagService {
+    rpc PutTag (TagInfo) returns (common.Empty);
+    rpc FetchTag (common.FetchRequest) returns (TagList);
+}

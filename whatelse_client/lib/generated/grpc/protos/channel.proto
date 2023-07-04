@@ -1,0 +1,163 @@
+syntax = "proto3";
+
+package channel;
+
+enum ChannelType {
+    PUBLIC = 0;
+    INVITED = 1;
+    PRIVATE = 2;
+}
+
+message CreateChannelRequest {
+    int64 profileId = 1;
+    string name = 2;
+    string desc = 3;
+    string icon = 4;
+    optional bytes image = 5;
+    optional bytes avatar = 6;
+    ChannelType type = 7;
+    bool reqData = 8;
+    int64 updateAt = 9;
+    optional int64 deleteAt = 10;
+}
+message CreateChannelResponse {
+    int64 channelId = 1;
+}
+
+message GetChannelRequest {
+    int64 channelId = 1;
+}
+message GetChannelResponse {
+    int64 channelId = 1;
+    int64 profileId = 2;
+    string name = 3;
+    string desc = 4;
+    string icon = 5;
+    optional bytes image = 6;
+    optional bytes avatar = 7;
+    ChannelType type = 8;
+    bool reqData = 9;
+    int64 updateAt = 10;
+    optional int64 deleteAt = 11;
+}
+
+message ChannelInfo {
+    int64 channelId = 1;
+    int64 profileId = 2;
+    string name = 3;
+    string desc = 4;
+    string icon = 5;
+    optional bytes image = 6;
+    optional bytes avatar = 7;
+    ChannelType type = 8;
+    bool reqData = 9;
+    int64 updateAt = 10;
+    optional int64 deleteAt = 11;
+}
+message GetChannelListRequest {
+    int64 profileId = 1;
+    optional int64 lastFetchAt = 2;
+}
+message GetChannelListResponse {
+    repeated ChannelInfo channelList = 1;
+}
+
+message ModifyChannelRequest {
+    int64 channelId = 1;
+    string name = 2;
+    string desc = 3;
+    string icon = 4;
+    optional bytes image = 5;
+    optional bytes avatar = 6;
+    ChannelType type = 7;
+    bool reqData = 8;
+    int64 updateAt = 9;
+    optional int64 deleteAt = 10;
+}
+message ModifyChannelResponse { }
+
+message RemoveChannelRequest {
+    int64 channelId = 1;
+    int64 deleteAt = 2;
+}
+message RemoveChannelResponse { }
+
+enum SubscriptionType {
+    AUTOREJECT = 0;
+    NORMAL = 1;
+    AUTOACCEPT = 2;
+}
+
+message CreateSubscriptionRequest {
+    int64 profileId = 1;
+    int64 channelId = 2;
+    bool shareRecord = 3;
+    SubscriptionType type = 4;
+    int64 updateAt = 5;
+    optional int64 deleteAt = 6;
+}
+message CreateSubscriptionResponse {
+    int64 subscriptionId = 1;
+}
+
+message GetSubscriptionRequest {
+    int64 subscriptionId = 1;
+}
+message GetSubscriptionResponse {
+    int64 subscriptionId = 1;
+    int64 profileId = 2;
+    int64 channelId = 3;
+    bool shareRecord = 4;
+    SubscriptionType type = 5;
+    int64 updateAt = 6;
+    optional int64 deleteAt = 7;
+}
+
+message SubscriptionInfo {
+    int64 subscriptionId = 1;
+    int64 profileId = 2;
+    int64 channelId = 3;
+    bool shareRecord = 4;
+    SubscriptionType type = 5;
+    int64 updateAt = 6;
+    optional int64 deleteAt = 7;
+}
+message ChannelSubsciprtionList {
+    ChannelInfo channelInfo = 1;
+    SubscriptionInfo subscriptionInfo = 2;
+}
+message GetSubscriptionListRequest {
+    int64 profileId = 1;
+    optional int64 lastFetchAt = 2;
+}
+message GetSubscriptionListResponse {
+    repeated ChannelSubsciprtionList SubscriptionList = 1;
+}
+
+message ModifySubscriptionRequest {
+    int64 subscriptionId = 1;
+    bool shareRecord = 2;
+    SubscriptionType type = 3;
+    int64 updateAt = 4;
+    optional int64 deleteAt = 5;
+}
+message ModifySubscriptionResponse { }
+
+message RemoveSubscriptionRequest {
+    int64 subscriptionId = 1;
+    int64 deleteAt = 2;
+}
+message RemoveSubscriptionResponse { }
+
+service Channel {
+    rpc Create(CreateChannelRequest) returns (CreateChannelResponse);
+    rpc Get(GetChannelRequest) returns (GetChannelResponse);
+    rpc List (GetChannelListRequest) returns (GetChannelListResponse);
+    rpc Modify(ModifyChannelRequest) returns (ModifyChannelResponse);
+    rpc Remove(RemoveChannelRequest) returns (RemoveChannelResponse);
+    rpc CreateSubscription(CreateSubscriptionRequest) returns (CreateSubscriptionResponse);
+    rpc GetSubscription(GetSubscriptionRequest) returns (GetSubscriptionResponse);
+    rpc GetSubscriptionList(GetSubscriptionListRequest) returns (GetSubscriptionListResponse);
+    rpc ModifySubscription(ModifySubscriptionRequest) returns (ModifySubscriptionResponse);
+    rpc RemoveSubscription(RemoveSubscriptionRequest) returns (RemoveSubscriptionResponse);
+}

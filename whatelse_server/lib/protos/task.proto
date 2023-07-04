@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package task;
+
+import "profile.proto";
+import "channel.proto";
+import "common.proto";
+
+message TaskInfo {
+    string uuid = 1;
+    string title = 2;
+    string desc = 3;
+    string content = 4;
+    optional string location = 5;
+    bool requireLocation = 6;
+    bool requireTime = 7;
+    bool requireAttachment = 8;
+    profile.ProfileInfo owner = 9;
+    optional TaskInfo parentTask = 10;
+    repeated channel.ChannelInfo channels = 11;
+    int64 updateAt = 12;
+    optional int64 deleteAt = 13;
+}
+
+message TaskList {
+    repeated TaskInfo tasks = 1;
+}
+
+service TaskService {
+    rpc PutTask (TaskInfo) returns (common.Empty);
+    rpc FetchTask (common.FetchRequest) returns (TaskList);
+}

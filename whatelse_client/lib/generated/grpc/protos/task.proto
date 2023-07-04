@@ -1,0 +1,131 @@
+syntax = "proto3";
+
+package task;
+
+message CreateTaskRequest {
+    int64 profileId = 1;
+    optional int64 parentId = 2;
+    repeated int64 channelIds = 3;
+    bool inherited = 4;
+    bool periodic = 5;
+    string title = 6;
+    string desc = 7;
+    optional string location = 8;
+    string content = 9;
+    bool specLoc = 10;
+    bool specTime = 11;
+    bool specAtt = 12;
+    int64 updateAt = 13;
+    optional int64 deleteAt = 14;
+}
+message CreateTaskResponse {
+    int64 taskId = 1;
+}
+
+message TaskInfo {
+    int64 taskId = 1;
+    optional int64 parentId = 2;
+    repeated int64 channelIds = 3;
+    bool inherited = 4;
+    bool periodic = 5;
+    int64 ownerId = 6;
+    string title = 7;
+    string desc = 8;
+    optional string location = 9;
+    string content = 10;
+    bool specLoc = 11;
+    bool specTime = 12;
+    bool specAtt = 13;
+    int64 updateAt = 14;
+    optional int64 deleteAt = 15;
+}
+
+message GetTaskRequest {
+    int64 taskId = 1;
+}
+message GetTaskResponse {
+    int64 taskId = 1;
+    optional int64 parentId = 2;
+    repeated int64 channelIds = 3;
+    bool inherited = 4;
+    bool periodic = 5;
+    int64 ownerId = 6;
+    string title = 7;
+    string desc = 8;
+    optional string location = 9;
+    string content = 10;
+    bool specLoc = 11;
+    bool specTime = 12;
+    bool specAtt = 13;
+    int64 updateAt = 14;
+    optional int64 deleteAt = 15;
+}
+
+message ModifyTaskRequest {
+    int64 taskId = 1;
+    optional int64 parentId = 2;
+    repeated int64 channelIds = 3;
+    bool inherited = 4;
+    bool periodic = 5;
+    string title = 6;
+    string desc = 7;
+    optional string location = 8;
+    string content = 9;
+    bool specLoc = 10;
+    bool specTime = 11;
+    bool specAtt = 12;
+    int64 updateAt = 13;
+    optional int64 deleteAt = 14;
+}
+message ModifyTaskResponse { }
+
+message RemoveTaskRequest {
+    int64 taskId = 1;
+    int64 deleteAt = 2;
+}
+message RemoveTaskResponse { }
+
+message AssetMetaData {
+    optional int64 assetId = 1;
+    int64 taskId = 2;
+    string hash = 3;
+    string category = 4;
+    int64 updateAt = 5;
+    optional int64 deleteAt = 6;
+}
+message UploadAssetsRequest {
+    oneof data {
+        AssetMetaData metaData = 1;
+        bytes chunk = 2;
+    }
+}
+message UploadAssetsResponse {
+    int64 assetId = 1;
+}
+
+message GetAssetsRequest {
+    int64 assetId = 1;
+}
+message GetAssetsResponse {
+    oneof data {
+        AssetMetaData metaData = 1;
+        bytes chunk = 2;
+    }
+}
+
+message RemoveAssetsRequest {
+    int64 assetId = 1;
+    int64 deleteAt = 2;
+}
+message RemoveAssetsResponse { }
+
+service Task {
+    rpc Create (CreateTaskRequest) returns (CreateTaskResponse);
+    rpc Modify (ModifyTaskRequest) returns (ModifyTaskResponse);
+    rpc Get (GetTaskRequest) returns (GetTaskResponse);
+    rpc Remove (RemoveTaskRequest) returns (RemoveTaskResponse);
+
+    rpc UploadAssets (stream UploadAssetsRequest) returns (UploadAssetsResponse);
+    rpc GetAssets (GetAssetsRequest) returns (stream GetAssetsResponse);
+    rpc RemoveAssets (RemoveAssetsRequest) returns (RemoveAssetsResponse);
+}

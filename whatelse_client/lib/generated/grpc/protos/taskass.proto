@@ -1,0 +1,131 @@
+syntax = "proto3";
+
+package taskassignment;
+
+import "task.proto";
+
+enum TaskAssignmentStatus {
+    ACCEPTED = 0;
+    REJECTED = 1;
+}
+
+enum TaskPriority {
+    NONE = 0;
+    LOW = 1;
+    MEDIUM = 2;
+    HIGH = 3;
+    URGENT = 4;
+}
+
+message CreateTaskAssignmentRequest {
+    int64 taskId = 1;
+    int64 profileId = 2;
+    TaskAssignmentStatus status = 3;
+    optional int64 categoryID = 4;
+    repeated int64 tagIDs = 5;
+    TaskPriority priority = 6;
+    bool starred = 7;
+    bool archived = 8;
+    bool shareRecord = 9;
+    optional string postAction = 10;
+    int64 updateAt = 11;
+    optional int64 deleteAt = 12;
+}
+message CreateTaskAssignmentResponse {
+    int64 assignmentId = 1;
+}
+
+message GetTaskAssignmentRequest {
+    int64 assignmentId = 1;
+}
+message GetTaskAssignmentResponse {
+    int64 assignmentId = 1;
+    int64 taskId = 2;
+    int64 profileId = 3;
+    TaskAssignmentStatus status = 4;
+    optional int64 categoryID = 5;
+    repeated int64 tagIDs = 6;
+    TaskPriority priority = 7;
+    bool starred = 8;
+    bool archived = 9;
+    bool shareRecord = 10;
+    optional string postAction = 11;
+    int64 updateAt = 12;
+    optional int64 deleteAt = 13;
+}
+
+message ModifyTaskAssignmentRequest {
+    int64 assignmentId = 1;
+    TaskAssignmentStatus status = 2;
+    optional int64 categoryID = 3;
+    repeated int64 tagIDs = 4;
+    TaskPriority priority = 5;
+    bool starred = 6;
+    bool archived = 7;
+    bool shareRecord = 8;
+    optional string postAction = 9;
+    int64 updateAt = 10;
+    optional int64 deleteAt = 11;
+}
+message ModifyTaskAssignmentResponse {
+    int64 assignmentId = 1;    
+}
+
+message RemoveTaskAssignmentRequest {
+    int64 assignmentId = 1;
+    int64 deleteAt = 2;
+}
+message RemoveTaskAssignmentResponse { }
+
+message TaskAssignmentInfo {
+    int64 assignmentId = 1;
+    int64 taskId = 2;
+    int64 profileId = 3;
+    TaskAssignmentStatus status = 4;
+    optional int64 categoryID = 5;
+    repeated int64 tagIDs = 6;
+    TaskPriority priority = 7;
+    bool starred = 8;
+    bool archived = 9;
+    bool shareRecord = 10;
+    optional string postAction = 11;
+    int64 updateAt = 12;
+    optional int64 deleteAt = 13;
+}
+message GetAssignedTasksRequest {
+    int64 profileId = 1;
+    optional int64 lastFetchAt = 2;
+}
+message GetAssignedTasksResponse {
+    repeated TaskAssignmentInfo taskAssignments = 1;
+}
+
+message GetUnassignedTasksRequest {
+    int64 profileId = 1;
+}
+message GetUnassignedTasksResponse {
+    repeated int32 taskId = 1;
+}
+
+message TaskAssignmentInfoWithTaskInfo {
+    TaskAssignmentInfo assignmentInfo = 1;
+    task.TaskInfo taskInfo = 2;
+}
+message GetAssignedTasksWithTaskInfoRequest {
+    int64 profileId = 1;
+    optional int64 lastFetchAt = 2;
+}
+message GetAssignedTasksWithTaskInfoResponse {
+    repeated TaskAssignmentInfoWithTaskInfo taskAssignments = 1;
+}
+
+service TaskAssignment {
+    rpc CreateAssignment(CreateTaskAssignmentRequest) returns (CreateTaskAssignmentResponse);
+    rpc GetAssignment(GetTaskAssignmentRequest) returns (GetTaskAssignmentResponse);
+    rpc ModifyAssignment(ModifyTaskAssignmentRequest) returns (ModifyTaskAssignmentResponse);
+    rpc RemoveAssignment(RemoveTaskAssignmentRequest) returns (RemoveTaskAssignmentResponse);
+    
+    rpc GetAssignedTasks(GetAssignedTasksRequest) returns (GetAssignedTasksResponse);
+    rpc GetUnassignedTasks (GetUnassignedTasksRequest) returns (GetUnassignedTasksResponse);
+    rpc GetAssignedTasksWithTaskInfo (GetAssignedTasksWithTaskInfoRequest) returns (GetAssignedTasksWithTaskInfoResponse);
+}

@@ -1,0 +1,69 @@
+// Prototypes for authentication and authorization
+
+syntax = "proto3";
+
+package auth;
+
+// Authentication
+message AuthRequest {
+    string identifier = 1;  // The user identifier can be an email or a phone number
+    string password = 2;
+}
+message AuthResponse {
+    string accessToken = 1;
+    string refreshToken = 2;
+}
+
+// Renew access token
+message RenewAuthNRequest {
+    string refreshToken = 1;
+}
+message RenewAuthNResponse {
+    string accessToken = 1;
+}
+
+// Renew refresh token
+message RenewAuthZRequest {
+    string identifier = 1;
+    string password = 2;
+    string refreshToken = 3;
+}
+message RenewAuthZResponse {
+    string accessToken = 1;
+    string refreshToken = 2;
+}
+
+// Revoke authorization
+message RevokeAuthRequest {
+    string refreshToken = 1;
+}
+message RevokeAuthResponse {}
+
+// Request for verification code
+message RequestVerifRequest {
+    string userClaim = 1;
+}
+message RequestVerifResponse {}
+
+// Validate verification code
+message ValidateVerifRequest {
+    string verifCode = 1;
+    string userClaim = 2;
+}
+message ValidateVerifResponse {}
+
+service Auth {
+    // Authentication when user logs in, generates a pair of access-refresh token
+    rpc Authenticate (AuthRequest) returns (AuthResponse);
+    // Renew access token when access token expires
+    rpc RenewAuthN (RenewAuthNRequest) returns (RenewAuthNResponse);
+    // Renew refresh token using stored username, password, and refresh token.
+    // Refresh token is required to handle revoked authorization
+    rpc RenewAuthZ (RenewAuthZRequest) returns (RenewAuthZResponse);
+    // Revoke authorization by blacklisting the refresh token
+    rpc RevokeAuth (RevokeAuthRequest) returns (RevokeAuthResponse);
+    // Request for a verification code
+    rpc RequestVerif (RequestVerifRequest) returns (RequestVerifResponse);
+    // Request for a validation of a verification code
+    rpc ValidateVerif (ValidateVerifRequest) returns (ValidateVerifResponse);
+}

@@ -1,0 +1,43 @@
+syntax = "proto3";
+
+package task_assignment;
+
+import "profile.proto";
+import "category.proto";
+import "tag.proto";
+import "task.proto";
+import "common.proto";
+
+enum TaskAssignmentStatus {
+    ACCEPTED = 0;
+    REJECTED = 1;
+}
+
+enum TaskPriority {
+    NONE = 0;
+    LOW = 1;
+    MEDIUM = 2;
+    HIGH = 3;
+    URGENT = 4;
+}
+
+message TaskAssignmentInfo {
+    TaskAssignmentStatus status = 1;
+    TaskPriority priority = 2;
+    bool starred = 3;
+    profile.ProfileInfo profile = 4;
+    task.TaskInfo task = 5;
+    optional category.CategoryInfo category = 6;
+    repeated tag.TagInfo tags = 7;
+    int64 updateAt = 8;
+    optional int64 deleteAt = 9;
+}
+
+message TaskAssignmentList {
+    repeated TaskAssignmentInfo taskAssignments = 1;
+}
+
+service TaskAssignmentService {
+    rpc PutTaskAssignment (TaskAssignmentInfo) returns (common.Empty);
+    rpc FetchTaskAssignment (common.FetchRequest) returns (TaskAssignmentList);
+}

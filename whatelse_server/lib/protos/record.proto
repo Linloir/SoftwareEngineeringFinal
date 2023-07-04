@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package record;
+
+import "profile.proto";
+import "task.proto";
+import "session.proto";
+import "common.proto";
+
+message RecordInfo {
+    int64 time = 1;
+    int32 index = 2;
+    task.TaskInfo task = 3;
+    session.SessionInfo session = 4;
+    profile.ProfileInfo profile = 5;
+    int64 updateAt = 6;
+    optional int64 deleteAt = 7;
+}
+
+message RecordList {
+    repeated RecordInfo records = 1;
+}
+
+service RecordService {
+    rpc PutRecord (RecordInfo) returns (common.Empty);
+    rpc FetchRecord (common.FetchRequest) returns (RecordList);
+}

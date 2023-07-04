@@ -1,0 +1,8 @@
+{
+    "protoc": {
+
+        "options": [
+            "--proto_path=lib/generated/grpc/protos",
+        ]
+    }
+}

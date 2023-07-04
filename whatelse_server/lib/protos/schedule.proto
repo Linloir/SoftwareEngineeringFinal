@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package schedule;
+
+import "profile.proto";
+import "session.proto";
+import "common.proto";
+
+message ScheduleInfo {
+    int64 relStart = 1;
+    int64 relEnd = 2;
+    profile.ProfileInfo profile = 3;
+    session.SessionInfo session = 4;
+    int64 updateAt = 5;
+    optional int64 deleteAt = 6;
+}
+
+message ScheduleList {
+    repeated ScheduleInfo schedules = 1;
+}
+
+service ScheduleService {
+    rpc PutSchedule (ScheduleInfo) returns (common.Empty);
+    rpc FetchSchedule (common.FetchRequest) returns (ScheduleList);
+}

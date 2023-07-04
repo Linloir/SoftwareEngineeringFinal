@@ -1,0 +1,43 @@
+syntax = "proto3";
+
+package record_attachment;
+
+import "record.proto";
+import "common.proto";
+
+message RecordAttachmentInfo {
+    string hash = 1;
+    string name = 2;
+    record.RecordInfo record = 3;
+    int64 updateAt = 4;
+    optional int64 deleteAt = 5;
+}
+
+message RecordAttachmentList {
+    repeated RecordAttachmentInfo recordAttachments = 1;
+}
+
+message RecordAttachmentStream {
+    oneof data {
+        RecordAttachmentInfo recordAttachmentInfo = 1;
+        bytes bytes = 2;
+    }
+}
+
+message RecordAttachmentIdentifier {
+    string sessionUuid = 1;
+    string taskUuid = 2;
+    int32 userId = 3;
+    string profileName = 4;
+    int32 recordIndex = 5;
+}
+
+message RecordAttachmentBytes {
+    bytes bytes = 1;
+}
+
+service RecordAttachmentService {
+    rpc PutRecordAttachment (stream RecordAttachmentStream) returns (common.Empty);
+    rpc FetchRecordAttachmentMeta (common.FetchRequest) returns (RecordAttachmentList);
+    rpc FetchRecordAttachmentBytes (RecordAttachmentIdentifier) returns (stream RecordAttachmentBytes);
+}

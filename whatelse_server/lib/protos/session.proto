@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package session;
+
+import "task.proto";
+import "common.proto";
+
+message SessionInfo {
+    string uuid = 1;
+    int64 start = 2;
+    int64 end = 3;
+    int64 cycle = 4;
+    task.TaskInfo task = 5;
+    int64 updateAt = 6;
+    optional int64 deleteAt = 7;
+}
+
+message SessionList {
+    repeated SessionInfo sessions = 1;
+}
+
+service SessionService {
+    rpc PutSession (SessionInfo) returns (common.Empty);
+    rpc FetchSessoin (common.FetchRequest) returns (SessionList);
+}

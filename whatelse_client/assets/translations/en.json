@@ -1,0 +1,120 @@
+{
+  "app_title": "What Else",
+  "login_userclaim_desc": "Phone / Email",
+  "login_password_desc": "Password",
+  "login_store_credentials_desc": "Remember me",
+  "userclaim_invalid_empty": "Phone / Email should not be empty",
+  "userclaim_invalid_format": "Phone / Email is not in valid format",
+  "password_invalid_empty": "Password should not be empty",
+  "login_hint_invalid_credentials": "User claim or password is invalid",
+  "login_expired_alert_title": "Login Expired",
+  "login_expired_alert_msg": "The login session has expired. Please login again.",
+  "login_expired_alert_ok": "OK",
+  "login_button_text": "Log In",
+  "login_failed_alert_title": "Login Failed",
+  "register_button_text": "Register",
+  "logout_button_text": "Log Out",
+  "error": {
+    "unknown": "Unknown Error",
+    "internal": "Internal Error",
+    "network": "Network Error",
+    "invalid_credentials": "Invalid Credentials"
+  },
+  "reg": {
+    "userclaim": {
+      "error": {
+        "internal_error": "Internal Error",
+        "invalid_argument": "The format of the phone number or email is invalid",
+        "empty_argument": "The phone number or email should not be empty",
+        "already_exists": "The phone number or email already exists",
+        "success": ""
+      },
+      "hint": {
+        "page_title": "Register Account",
+        "page_desc": "Register with your phone number or email",
+        "input_hint": "Phone / Email",
+        "submit_hint": "Next"
+      }
+    },
+    "verifcode": {
+      "error": {
+        "invalid_code": "The verification code is incorrect",
+        "request_too_frequent_error": "The verification code has been sent too frequently, please try again later",
+        "request_failed_error": "Failed to send verification code, please try again later",
+        "sent": "",
+        "success": ""
+      },
+      "hint": {
+        "page_title": "Verification Code",
+        "page_desc": "Please enter the verification code sent to your {}",
+        "device_type": {
+          "phone": "phone",
+          "email": "email"
+        },
+        "resend_hint": "Didn't receive the code? Resend",
+        "sent_hint": "{} seconds left for the next resend"
+      },
+      "alert": {
+        "title": "Send Failed",
+        "actions": {
+          "resend": "Resend",
+          "ok": "Ok"
+        }
+      }
+    },
+    "password": {
+      "error": {
+        "not_match": "The two passwords do not match",
+        "too_short": "The password is too short, please enter at least {} characters",
+        "empty": "The password should not be empty"
+      },
+      "hint": {
+        "input_hint": "Password",
+        "confirm_hint": "Confirm Password",
+        "next_hint": "Next",
+        "page_title": "Set Password",
+        "page_desc": "Please set your password"
+      }
+    },
+    "userinfo": {
+      "error": {
+        "empty": "The nickname should not be empty",
+        "network_error": "Network error, please try again later",
+        "internal_error": "Internal error, please try again later",
+        "success": ""
+      },
+      "hint": {
+        "page_title": "Set Nickname",
+        "page_desc": "Please set your nickname, you can change it later",
+        "input_hint": "Nickname",
+        "next_hint": "Register"
+      },
+      "alert": {
+        "title": "Register Failed",
+        "actions": {
+          "retry": "Retry",
+          "cancel": "Cancel"
+        }
+      }
+    }
+  },
+  "profile": {
+    "default": {
+      "name": "Default",
+      "desc": "Default Profile"
+    }
+  },
+  "main": {
+    "events": {
+      "merge": {
+        "title": "Merge Data",
+        "desc": "Merge local data with current user?\nAll local data will be lost if not",
+        "okText": "Merge",
+        "cancelText": "Cancel"
+      }
+    }
+  },
+  "local_state": "Local",
+  "logged_state": "Logged",
+  "profile_local_suffix": "local"
+}

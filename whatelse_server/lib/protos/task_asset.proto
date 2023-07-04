@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package task_asset;
+
+import "task.proto";
+import "common.proto";
+
+message TaskAssetInfo {
+    string name = 1;
+    string hash = 2;
+    task.TaskInfo task = 3;
+    int64 updateAt = 4;
+    optional int64 deleteAt = 5;
+}
+
+message TaskAssetList {
+    repeated TaskAssetInfo taskAssets = 1;
+}
+
+message TaskAssetIdentifier {
+    string hash = 1;
+    string taskUuid = 2;
+}
+
+message TaskAssetBytes {
+    bytes bytes = 1;
+}
+
+service TaskAssetService {
+    rpc PutTaskAsset (TaskAssetInfo) returns (common.Empty);
+    rpc FetchTaskAssetMeta (common.FetchRequest) returns (TaskAssetList);
+    rpc FetchTaskAssetBytes (TaskAssetIdentifier) returns (stream TaskAssetBytes);
+}

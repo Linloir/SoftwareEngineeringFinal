@@ -1,0 +1,86 @@
+syntax = "proto3";
+
+package schedule;
+
+message CreateScheduleRequest {
+    int64 sessionId = 1;
+    int64 profileId = 2;
+    int64 relStart = 3;
+    int64 relEnd = 4;
+    int64 updateAt = 5;
+    optional int64 deleteAt = 6;
+}
+message CreateScheduleResponse {
+    int64 scheduleId = 1;
+}
+
+message ModifyScheduleRequest {
+    int64 scheduleId = 1;
+    int64 relStart = 2;
+    int64 relEnd = 3;
+    int64 updateAt = 4;
+    optional int64 deleteAt = 5;
+}
+message ModifyScheduleResponse { }
+
+message GetScheduleRequest {
+    int64 scheduleId = 1;
+}
+message GetScheduleResponse {
+    int64 scheduleId = 1;
+    int64 sessionId = 2;
+    int64 profileId = 3;
+    int64 relStart = 4;
+    int64 relEnd = 5;
+    int64 updateAt = 6;
+    optional int64 deleteAt = 7;
+}
+
+message RemoveScheduleRequest {
+    int64 scheduleId = 1;
+    int64 deleteAt = 2;
+}
+message RemoveScheduleResponse { }
+
+message ScheduleInfo {
+    int64 scheduleId = 1;
+    int64 sessionId = 2;
+    int64 profileId = 3;
+    int64 relStart = 4;
+    int64 relEnd = 5;
+    int64 updateAt = 6;
+    optional int64 deleteAt = 7;
+}
+message SessionScheduleInfo {
+    int64 sessionId = 1;
+    repeated ScheduleInfo scheduleList = 2;
+}
+message GetTaskSchedulesRequest {
+    int64 taskId = 1;
+    int64 profileId = 2;
+    optional int64 lastFetchAt = 3;
+}
+message GetTaskSchedulesResponse {
+    repeated SessionScheduleInfo sessionList = 1;
+}
+
+message TaskScheduleInfo {
+    int64 taskId = 1;
+    repeated SessionScheduleInfo sessionList = 2;
+}
+message GetAllSchedulesRequest {
+    int64 profileId = 1;
+    optional int64 lastFetchAt = 2;
+}
+message GetAllSchedulesResponse {
+    repeated TaskScheduleInfo taskList = 1;
+}
+
+service Schedule {
+    rpc Create(CreateScheduleRequest) returns (CreateScheduleResponse);
+    rpc Modify(ModifyScheduleRequest) returns (ModifyScheduleResponse);
+    rpc Get(GetScheduleRequest) returns (GetScheduleResponse);
+    rpc Remove(RemoveScheduleRequest) returns (RemoveScheduleResponse);
+    rpc GetTaskSchedules(GetTaskSchedulesRequest) returns (GetTaskSchedulesResponse);
+    rpc GetAllSchedules (GetAllSchedulesRequest) returns (GetAllSchedulesResponse);
+}

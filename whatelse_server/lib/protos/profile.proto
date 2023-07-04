@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package profile;
+
+import "user.proto";
+import "common.proto";
+
+message ProfileInfo {
+    string name = 1;
+    string color = 2;
+    string icon = 3;
+    user.UserInfo user = 4;
+    int64 updateAt = 5;
+    optional int64 deleteAt = 6;
+}
+
+message ProfileList {
+    repeated ProfileInfo profiles = 1;
+}
+
+service ProfileService {
+    rpc PutProfile (ProfileInfo) returns (common.Empty);
+    rpc FetchProfile (common.FetchRequest) returns (ProfileList);
+}
